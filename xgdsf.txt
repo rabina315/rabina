@@ -131,4 +131,5 @@ Message received :011011011011
 G(x)=10101
 Quotient at receiver :01110111
 Remainder at receiver :000000000000
+
 No error detected -->CRC algorithm implemented successfully.
