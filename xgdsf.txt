@@ -1,0 +1,134 @@
+Date: 30-09-2022
+//2. CRC PROGRAM (Transmitter and Receiver)
+2. Implementation of CRC polynomials, CRC 12, CRC 16 and CRC CCIP.
+Aim: program to Implementation of CRC polynomials, CRC 12, CRC 16 and CRC CCIP.
+#include<stdio.h>
+#include<stdlib.h>
+int print(int *a,int n)
+{
+int i;
+for(i=0;i<n;i++)
+{
+printf("%d",a[i]);
+}
+printf("\n");
+return (0);
+}
+int crc(int *g,int *q,int *r,int ng,int nq)
+{
+int i,j,k;
+k = 0;
+for(i=0;i<nq;i++)
+{
+if(r[i]==0)
+{
+for(j=i;j<(i+ng);j++)
+{
+r[j]=r[j]^0;
+}
+q[i]=0;
+}
+else
+{
+for(j=i;j<(i+ng);j++)
+{
+r[j]=r[j]^g[k];
+k++;
+}
+q[i]=1;
+k=0;
+}
+}
+return (0);
+}
+main()
+{
+int *gx,*tx,*q,*r;
+int i,j,nt,ng,nq,n,flag=1;
+printf("\n Enter no. of bits in message to be transmitted:");
+scanf("%d",&nt);
+printf("\n Enter no. of bits in G(x) :");
+scanf("%d",&ng);
+n=nt+ng-1;
+nq=nt;
+gx=malloc(sizeof(int)*ng);
+tx=malloc(sizeof(int)*n);
+r=malloc(sizeof(int)*n);
+q=calloc(nq,sizeof(int));
+printf("\n Enter message :");
+for(i=0;i<nt;i++)
+{
+scanf("%d",&tx[i]);
+r[i]=tx[i];
+}
+for(;i<n;i++)
+{
+r[i]=0;
+}
+printf("\n Enter G(x) :");
+for(i=0;i<ng;i++)
+{
+scanf("%d",&gx[i]);
+}
+/* *****AT TRANSMITTER***** */
+printf("\n CRC at transmitter :");
+printf("\n Message to be transmitted :");
+print(tx,nt);
+printf("\n G(x)=");
+print(gx,ng);
+printf("\n Message with '0' appended :");
+print(r,n);
+crc(gx,q,r,ng,nq);
+printf("\n Quotient at transmitter:");
+print(q,nq);
+printf("\n Remainder at transmitter :");
+print(r,n);
+for(i=0;i<nt;i++)
+{
+r[i]=tx[i];
+}
+printf("\n Transmitted message :");
+print(r,n);
+/* ***** AT RECEIVER***** */
+printf("\n CRC at receiver :");
+printf("\n Message received :");
+print(r,n);
+printf("\n G(x)=");
+print(gx,ng);
+crc(gx,q,r,ng,nq);
+printf("\n Quotient at receiver :");
+print(q,nq);
+printf("\n Remainder at receiver :");
+print(r,n);
+for(i=0;i<n;i++)
+{
+if(r[i]!=0)
+{
+flag=0;
+break;
+}
+}
+if(flag)
+printf("\n No error detected -->CRC algorithm implemented successfully.");
+else
+printf("\n Error detected.");
+getch();
+}
+Result:
+Enter no. of bits in message to be transmitted:8
+Enter no. of bits in G(x) :5
+Enter message :0 1 1 0 1 1 0 1
+Enter G(x) :1 0 1 0 1
+CRC at transmitter :
+Message to be transmitted :01101101
+G(x)=10101
+Message with '0' appended :011011010000
+Quotient at transmitter:01110111
+Remainder at transmitter :000000001011
+Transmitted message :011011011011
+CRC at receiver :
+Message received :011011011011
+G(x)=10101
+Quotient at receiver :01110111
+Remainder at receiver :000000000000
+No error detected -->CRC algorithm implemented successfully.
